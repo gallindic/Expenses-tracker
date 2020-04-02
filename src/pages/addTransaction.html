@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+
+    <script src="https://kit.fontawesome.com/99b33a514d.js" crossorigin="anonymous"></script>
+    <title>Expenses tracker</title>
+</head>
+<body>
+    <div id="navbar">
+        <h1 class="title">Expanses tracker</h1>
+        <div class="hamburger-menu-btn" id="hamburger-btn">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+    </div>
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+                <a href="../../index.html" class="sidebar-item-link">Dashboard</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="#" class="sidebar-item-link active">Add transaction</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="allTransaction.html" class="sidebar-item-link">All transactions</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="" class="sidebar-item-link">Settings</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="settings.html" class="sidebar-item-link">Description</a>
+            </li>
+        </ul>
+    </div>
+    <div id="Wrapper">
+        <div class="add-transaction-container container">
+            <div class="alert"></div>
+            <div class="add-transaction-menu container-menu-title underline-title">
+                <h2><i class="fas fa-shopping-cart"></i><span>Add new transaction</span></h2>
+            </div>
+            <div class="form-container">
+                <label for="store">Name of the store, restaurant, etc.</label>
+                <input type="text" name="store" id="store-input">
+                <label for="category">Transaction category</label>
+                <select name="category" id="category-input">
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Food">Food</option>
+                    <option value="Drink">Drink</option>
+                    <option value="Utils">Utils</option>
+                    <option value="Transportation">Transportation</option>
+                    <option value="Subscription">Subscription</option>
+                    <option value="Other">Other</option>
+                </select>
+                <label for="method-dropdown">Payment method</label>
+                <select name="method-dropdown" id="type-drpdwn">
+                    <option value="Card">Card</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Cryptocoin">Cryptocoin</option>
+                    <option value="Other">Other</option>
+                </select>
+                <label for="cost">Cost</label>
+                <input type="number" name="cost" id="cost-input" min="1">
+                <label for="date">Date</label>
+                <input type="date" name="date" id="date-input">
+                <div class="add-transaction-btn" id="add-btn">Add Transaction</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>

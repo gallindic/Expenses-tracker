@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="src/css/reset.css">
+    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/responsive.css">
+
+    <script src="https://kit.fontawesome.com/99b33a514d.js" crossorigin="anonymous"></script>
+    <title>Expenses tracker</title>
+</head>
+<body>
+    <div id="navbar">
+        <h1 class="title">Expanses tracker</h1>
+        <div class="hamburger-menu-btn" id="hamburger-btn">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+    </div>
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+                <a href="" class="sidebar-item-link active">Dashboard</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="src/pages/addTransaction.html" class="sidebar-item-link">Add transaction</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="src/pages/allTransaction.html" class="sidebar-item-link">All transactions</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="" class="sidebar-item-link">Settings</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="src/pages/settings.html" class="sidebar-item-link">Description</a>
+            </li>
+        </ul>
+    </div>
+    <div id="Wrapper">
+        <div class="status-container container">
+            <h2 class="date-paragraph">Expanses for April</h2>
+            <div class="stats">
+                <h3>Currently spent</h3>
+                <h2>380 <sup>EUR</sup></h2>
+            </div>
+            <div class="stats">
+                <h3>Monthly limit</h3>
+                <h2>500 <sup>EUR</sup></h2>
+            </div>
+        </div>
+        <div class="transactions-container container">
+            <div class="transactions-container-menu container-menu-title">
+                <h2><i class="fa fa-exchange"></i><span>Transactions</span></h2>
+                <p><a href="src/pages/allTransaction.html">Show all</a></p>
+            </div>
+           <div class="transactions" data-limit="5">
+               <!--JS populates transactions based on limit-->     
+           </div>
+        </div>
+        <!---->
+        <div class="charts-container container">
+            <div class="pie-chart-container">
+                    
+            </div>
+        </div>
+    </div>
+    <script src="src/js/script.js"></script>
+</body>
+</html>

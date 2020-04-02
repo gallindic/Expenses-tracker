@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+
+    <script src="https://kit.fontawesome.com/99b33a514d.js" crossorigin="anonymous"></script>
+    <title>Expenses tracker</title>
+</head>
+<body>
+    <div id="navbar">
+        <h1 class="title">Expanses tracker</h1>
+        <div class="hamburger-menu-btn" id="hamburger-btn">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+        </div>
+    </div>
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="sidebar-menu-item">
+                <a href="../../index.html" class="sidebar-item-link">Dashboard</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="addTransaction.html" class="sidebar-item-link">Add transaction</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="allTransaction.html" class="sidebar-item-link active">All transactions</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="" class="sidebar-item-link">Settings</a>
+            </li>
+            <li class="sidebar-menu-item">
+                <a href="settings.html" class="sidebar-item-link">Description</a>
+            </li>
+        </ul>
+    </div>
+    <div id="Wrapper">
+        <div class="controls container">
+            <div class="inline-input">
+                <label for="sort">Sort by</label>
+                <select name="sort" id="sort-select" selected value>
+                    <option value="none">None</option>
+                    <option value="ascending">Cost ASC</option>
+                    <option value="descending">Cost DSC</option>
+                </select>
+            </div>
+            <div class="inline-input">
+                <label for="filter">FIlter</label>
+                <select name="filter" id="filter-select" selected value>
+                    <option value="none">None</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="subscription">Subscription</option>
+                </select>
+            </div>
+        </div>
+        <div class="transactions-container container">
+            <div class="transactions-container-menu container-menu-title underline-title">
+                <h2><i class="fa fa-exchange"></i><span>Transactions</span></h2>
+            </div>
+            <div id="all-transactions-container" class="transactions margin-top-small">
+                <!--Is populated by JS-->
+            </div>
+        </div>
+    </div>
+    <script src="../js/script.js"></script>
+</body>
+</html>
