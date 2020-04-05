@@ -23,47 +23,111 @@
     <div class="sidebar">
         <ul class="sidebar-menu">
             <li class="sidebar-menu-item">
-                <a href="../../index.html" class="sidebar-item-link">Dashboard</a>
+                <a href="../../index.html" class="sidebar-item-link">
+                    <span class="sidebar-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </span>
+                    Dashboard
+                </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="addTransaction.html" class="sidebar-item-link">Add transaction</a>
+                <a href="addTransaction.html" class="sidebar-item-link">
+                    <span class="sidebar-icon">
+                        <i class="fas fa-plus-square"></i>
+                    </span>
+                    Add transaction
+                </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="allTransaction.html" class="sidebar-item-link active">All transactions</a>
+                <a href="#" class="sidebar-item-link active">
+                    <span class="sidebar-icon">
+                        <i class="fas fa-list-ul"></i>
+                    </span>
+                    All transactions
+                </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="" class="sidebar-item-link">Settings</a>
+                <a href="" class="sidebar-item-link">
+                    <span class="sidebar-icon">
+                        <i class="fas fa-cogs"></i>
+                    </span>
+                    Settings
+                </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="settings.html" class="sidebar-item-link">Description</a>
+                <a href="src/pages/settings.html" class="sidebar-item-link">
+                    <span class="sidebar-icon">
+                        <i class="fas fa-stream"></i>
+                    </span>
+                    Description
+                </a>
             </li>
         </ul>
     </div>
-    <div id="Wrapper">
-        <div class="controls container">
-            <div class="inline-input">
-                <label for="sort">Sort by</label>
-                <select name="sort" id="sort-select" selected value>
-                    <option value="none">None</option>
-                    <option value="ascending">Cost ASC</option>
-                    <option value="descending">Cost DSC</option>
+    <div class="modal" id="transactionModal">
+        <div class="transaction-modal">
+            <span class="modal-close-btn">&times;</span>
+            <div class="modal-body">
+                <label for="store">Name of the store, restaurant, etc.</label>
+                <input type="text" name="store" id="store-input">
+                <label for="category">Transaction category</label>
+                <select name="category" id="category-input">
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Food">Food</option>
+                    <option value="Drink">Drink</option>
+                    <option value="Utils">Utils</option>
+                    <option value="Transportation">Transportation</option>
+                    <option value="Subscription">Subscription</option>
+                    <option value="Other">Other</option>
                 </select>
-            </div>
-            <div class="inline-input">
-                <label for="filter">FIlter</label>
-                <select name="filter" id="filter-select" selected value>
-                    <option value="none">None</option>
-                    <option value="entertainment">Entertainment</option>
-                    <option value="subscription">Subscription</option>
+                <label for="method-dropdown">Payment method</label>
+                <select name="method-dropdown" id="type-drpdwn">
+                    <option value="Card">Card</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Cryptocoin">Cryptocoin</option>
+                    <option value="Other">Other</option>
                 </select>
+                <label for="cost">Cost</label>
+                <input type="number" name="cost" id="cost-input" min="1">
+                <label for="date">Date</label>
+                <input type="date" name="date" id="date-input">
+                <div class="controls">
+                    <div class="edit-btn btn" id="edit-btn">Edit</div>
+                    <div class="delete-btn btn" id="delete-btn">Delete</div>
+                </div>
+                
             </div>
         </div>
-        <div class="transactions-container container">
-            <div class="transactions-container-menu container-menu-title underline-title">
-                <h2><i class="fa fa-exchange"></i><span>Transactions</span></h2>
-            </div>
-            <div id="all-transactions-container" class="transactions margin-top-small">
-                <!--Is populated by JS-->
+    </div>
+    <div id="Wrapper" class="override-row-repeat">
+        <div class="all-transactions-container container">
+            <div class="transactions">
+                <table id="transactions-table-container" class="transactions-table">
+                    <thead>
+                        <tr class="head">
+                            <th class="hidden">
+                                Transaction
+                            </th>
+                            <th>
+                                Category
+                            </th>
+                            <th class="hidden">
+                                Date
+                            </th>
+                            <th class="hidden">
+                                Payment
+                            </th>
+                            
+                            <th>
+                                Amount
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <!--JS populates table rows base on data limit set to the table-->
+                </table>
             </div>
         </div>
     </div>

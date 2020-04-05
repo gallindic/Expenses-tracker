@@ -23,49 +23,211 @@
     <div class="sidebar">
         <ul class="sidebar-menu">
             <li class="sidebar-menu-item">
-                <a href="" class="sidebar-item-link active">Dashboard</a>
+                <a href="" class="sidebar-item-link active">
+                    <span class="sidebar-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </span>
+                    Dashboard
+                </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="src/pages/addTransaction.html" class="sidebar-item-link">Add transaction</a>
+                <a href="src/pages/addTransaction.html" class="sidebar-item-link">
+                    <span class="sidebar-icon">
+                        <i class="fas fa-plus-square"></i>
+                    </span>
+                    Add transaction
+                </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="src/pages/allTransaction.html" class="sidebar-item-link">All transactions</a>
+                <a href="src/pages/allTransaction.html" class="sidebar-item-link">
+                    <span class="sidebar-icon">
+                        <i class="fas fa-list-ul"></i>
+                    </span>
+                    All transactions
+                </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="" class="sidebar-item-link">Settings</a>
+                <a href="" class="sidebar-item-link">
+                    <span class="sidebar-icon">
+                        <i class="fas fa-cogs"></i>
+                    </span>
+                    Settings
+                </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="src/pages/settings.html" class="sidebar-item-link">Description</a>
+                <a href="src/pages/settings.html" class="sidebar-item-link">
+                    <span class="sidebar-icon">
+                        <i class="fas fa-stream"></i>
+                    </span>
+                    Description
+                </a>
             </li>
         </ul>
     </div>
     <div id="Wrapper">
-        <div class="status-container container">
-            <h2 class="date-paragraph">Expanses for April</h2>
-            <div class="stats">
-                <h3>Currently spent</h3>
-                <h2>380 <sup>EUR</sup></h2>
+        <div class="expenses-container container">
+            <div class="container-header">Expenses in April</div>
+            <div class="expenses container-amount">
+                <!--Set by JS-->
             </div>
-            <div class="stats">
-                <h3>Monthly limit</h3>
-                <h2>500 <sup>EUR</sup></h2>
+        </div>
+        <div class="limit-container container">
+            <div class="container-header">Monthly limit</div>
+            <div class="limit container-amount">
+                <!--Set by JS-->
+            </div>
+        </div>
+        <div class="modal" id="transactionModal">
+            <div class="transaction-modal">
+                <span class="modal-close-btn">&times;</span>
+                <div class="modal-body">
+                    <label for="store">Name of the store, restaurant, etc.</label>
+                    <input type="text" name="store" id="store-input">
+                    <label for="category">Transaction category</label>
+                    <select name="category" id="category-input">
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Food">Food</option>
+                        <option value="Drink">Drink</option>
+                        <option value="Utils">Utils</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Subscription">Subscription</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <label for="method-dropdown">Payment method</label>
+                    <select name="method-dropdown" id="type-drpdwn">
+                        <option value="Card">Card</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Cryptocoin">Cryptocoin</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <label for="cost">Cost</label>
+                    <input type="number" name="cost" id="cost-input" min="1">
+                    <label for="date">Date</label>
+                    <input type="date" name="date" id="date-input">
+                    <div class="controls">
+                        <div class="edit-btn btn" id="edit-btn">Edit</div>
+                        <div class="delete-btn btn" id="delete-btn">Delete</div>
+                    </div>
+                    
+                </div>
             </div>
         </div>
         <div class="transactions-container container">
-            <div class="transactions-container-menu container-menu-title">
-                <h2><i class="fa fa-exchange"></i><span>Transactions</span></h2>
-                <p><a href="src/pages/allTransaction.html">Show all</a></p>
+            <div class="transactions">
+                <table id="transactions-table-container" class="transactions-table" data-limit="4">
+                    <thead>
+                        <tr class="head">
+                            <th class="hidden">
+                                Transaction
+                            </th>
+                            <th>
+                                Category
+                            </th>
+                            <th class="hidden">
+                                Date
+                            </th>
+                            <th class="hidden">
+                                Payment
+                            </th>
+                            
+                            <th>
+                                Amount
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                        </tr>
+                    </thead>
+                    <!--JS populates table rows base on data limit set to the table-->
+                </table>
+                <div class="controls">
+                    <a href="src/pages/allTransaction.html" class="show-btn">Show all</a>
+                </div>
             </div>
-           <div class="transactions" data-limit="5">
-               <!--JS populates transactions based on limit-->     
-           </div>
         </div>
-        <!---->
-        <div class="charts-container container">
-            <div class="pie-chart-container">
-                    
+        <div class="line-chart-container container">
+            <div class="chart-header">
+                <h2>Expenses per Month</h2>
             </div>
+            <svg class="line-graph graph">
+                <g class="grid x-grid">
+                  <line x1="5%" x2="100%" y1="90%" y2="90%"></line>
+                  <line class="dashed" x1="5%" x2="100%" y1="64%" y2="64%"></line>
+                  <line class="dashed" x1="5%" x2="100%" y1="34%" y2="34%"></line>
+                  <line class="dashed" x1="5%" x2="100%" y1="8%" y2="8%"></line>
+                </g>
+                <g>
+                    <text class="graph-text graph-month" x="5%" y="98%">Januar</text>
+                    <text class="graph-text graph-month" x="26%" y="98%">Februar</text>
+                    <text class="graph-text graph-month" x="47%" y="98%">Marec</text>
+                    <text class="graph-text graph-month" x="68%" y="98%">April</text>
+                    <text class="graph-text graph-month" x="89%" y="98%">Maj</text>
+                </g>              
+                <g>
+                    <text class="graph-text graph-expense" x="0%" y="10%">100</text>
+                    <text class="graph-text graph-expense" x="0%" y="35%">66</text>
+                    <text class="graph-text graph-expense" x="0%" y="65%">33</text>
+                </g>
+                <g class="grid y-grid">
+                    <line x1="27%" x2="27%" y1="90%" y2="8%"></line>
+                    <line x1="48%" x2="48%" y1="90%" y2="8%"></line>
+                    <line x1="69%" x2="69%" y1="90%" y2="8%"></line>
+                    <line x1="90%" x2="90%" y1="90%" y2="8%"></line>
+                </g>
+                <g class="grid">
+                    <line class="connection" x1="5%" x2="27%" y1="50%" y2="10%"></line>
+                    <line class="connection" x1="27%" x2="48%" y1="10%" y2="67%"></line>
+                    <line class="connection" x1="48%" x2="69%" y1="67%" y2="19%"></line>
+                    <line class="connection" x1="69%" x2="90%" y1="19%" y2="44%"></line>
+                </g>
+                <g class="data" data-setname="Our first data set">
+                    <circle class="graph-circle" cx="5%" cy="50%" r="6">
+                        <title>50</title>
+                    </circle>
+                    <circle class="graph-circle" cx="27%" cy="10%" r="6">
+                        <title>99</title>
+                    </circle>
+                    <circle class="graph-circle" cx="48%" cy="67%" r="6">
+                        <title>34</title>
+                    </circle>
+                    <circle class="graph-circle" cx="69%" cy="19%" r="6">
+                        <title>80</title>
+                    </circle>
+                    <circle class="graph-circle" cx="90%" cy="44%" r="6">
+                        <title>13</title>
+                    </circle>
+                </g>
+                
+              </svg>
         </div>
+        <div class="pie-graph-container container">
+        </div>
+        <div class="pie-graph-container2 container">
+            <div class="chart-header">
+                <h2>Number of diffrent payments used</h2>
+            </div>
+            <svg class="bar-graph graph">
+                <g class="grid x-grid">
+                  <line x1="5%" x2="100%" y1="90%" y2="90%"></line>
+                  <line class="dashed" x1="5%" x2="100%" y1="64%" y2="64%"></line>
+                  <line class="dashed" x1="5%" x2="100%" y1="34%" y2="34%"></line>
+                  <line class="dashed" x1="5%" x2="100%" y1="8%" y2="8%"></line>
+                </g>
+                <g>
+                    <text class="graph-text" x="5%" y="98%">Entertainment</text>
+                    <text class="graph-text" x="26%" y="98%">Food/Drink</text>
+                    <text class="graph-text" x="47%" y="98%">Transportation</text>
+                    <text class="graph-text" x="68%" y="98%">Subscription</text>
+                    <text class="graph-text" x="89%" y="98%">Other</text>
+                </g>              
+                <g>
+                    <text class="graph-text" x="0%" y="10%">100</text>
+                    <text class="graph-text" x="0%" y="35%">66</text>
+                    <text class="graph-text" x="0%" y="65%">33</text>
+                </g>
+              </svg>
+        </div>
+        <div class="quick-settings-container container">quick settings</div>
     </div>
     <script src="src/js/script.js"></script>
 </body>
