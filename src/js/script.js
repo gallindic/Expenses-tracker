@@ -36,78 +36,53 @@ toggleSidebar = () => {
     }
 }
 
-toggleTransactionDropdown = (e) => {
-    let arrowElement = e.target;
-    let id = arrowElement.getAttribute("data-transaction-arrow");
-    let transactionDropdowns = document.querySelectorAll(".transaction-dropdown");
-    
-    transactionDropdowns.forEach(dropdown => {
-        if(dropdown.getAttribute("data-transaction-id") === id){
-            if(dropdown.hasAttribute("data-dropdown-opened")){
-                dropdown.removeAttribute("data-dropdown-opened");
-                dropdown.classList.remove("show-dropdown");
-                arrowElement.classList.remove("rotate-arrow");
-            }
-            else{
-                dropdown.setAttribute("data-dropdown-opened", true);
-                dropdown.classList.add("show-dropdown");
-                arrowElement.classList.add("rotate-arrow");
-            }
-            
-            return;
-        }
-    });
-}
-
 emptyTransactionsContainer = () => {
     transactionsTable.lastElementChild.remove();
 }
 
-function GetSortOrderAsc(prop) {  
-    return function(a, b) {  
-        if (a > b) {  
-            return 1;  
-        } else if (a < b) {  
-            return -1;  
-        }  
-        return 0;  
-    }  
-}  
+compareAsc = ( a, b ) => {
+    if ( parseFloat(a.transactionCost) < parseFloat(b.transactionCost) ){
+        return -1;
+    }
+    if ( parseFloat(a.transactionCost) > parseFloat(b.transactionCost) ){
+        return 1;
+    }
+        return 0;
+}
 
-function GetSortOrderDsc(prop) {  
-    return function(a, b) {  
-        if (a < b) {  
-            return 1;  
-        } else if (a > b) {  
-            return -1;  
-        }  
-        return 0;  
-    }  
-}  
+compareDsc = ( a, b ) => {
+    if ( parseFloat(a.transactionCost) > parseFloat(b.transactionCost) ){
+        return -1;
+    }
+    if ( parseFloat(a.transactionCost) < parseFloat(b.transactionCost) ){
+        return 1;
+    }
+        return 0;
+}
 
 
-sortTransactions = () => {  
+sortTransactions = (option) => {  
+    console.log("ok")
     emptyTransactionsContainer();
     let transactions = JSON.parse(localStorage.getItem("transactions"));
-    transactions = sortBySelect.value === "descending" ? transactions.sort(GetSortOrderDsc("transactionCost")) :
-        transactions.sort(GetSortOrderAsc("transactionCost"));
+    let order = option.getAttribute("data-order");
 
-    localStorage.setItem("transactions", JSON.stringify(transactions));
+    transactions = order == "dsc" ? transactions.sort(compareDsc) :
+        transactions.sort(compareAsc);
 
-    populateTransactionsContainer();
-
+    populateTransactionsContainer(transactions);
+    resizeTable();
 }
 
-filterTransactions = () => {
-    emptyTransactionsContainer();
-}
 
 recalculateExpenses = () => {
     let transactions = JSON.parse(localStorage.getItem("transactions"));
     let e = 0;
 
     transactions.forEach(element => {
-        e += parseFloat(element.transactionCost);
+        let month = removeLeadingZerosFromPrice((element.transactionDate).substr(5, 2)) - 1;
+        if(month == new Date().getMonth())
+            e += parseFloat(element.transactionCost);
     });
 
     document.querySelector(".expenses").innerHTML = e + " " + currency;
@@ -118,6 +93,17 @@ recalculateExpenses = () => {
 editTransaction = (e) => {
     let id = e.target.getAttribute("data-transaction-id");
     let transactions = JSON.parse(localStorage.getItem("transactions"));
+
+    let store = document.getElementById("store-input");
+    let cost = document.getElementById("cost-input");
+    let date = document.getElementById("date-input");
+    let alertMessage = document.querySelector(".alert");
+
+    if(store.value == "" || cost.value < 0 || cost.value == "" || date.value == ""){
+        alertMessage.classList.add("alert-error");
+        alertMessage.innerHTML = "Error with saving transaction!";
+        return;
+    }
 
     let object, index;
 
@@ -130,7 +116,7 @@ editTransaction = (e) => {
     });
 
     object.transactionStore = document.getElementById("store-input").value;
-    object.transCategory = document.getElementById("category-input").value;
+    object.transactionCategory = document.getElementById("category-input").value;
     object.transactionMethod = document.getElementById("type-drpdwn").value;
     object.transactionCost = document.getElementById("cost-input").value;
     object.transactionDate = document.getElementById("date-input").value;
@@ -143,13 +129,20 @@ editTransaction = (e) => {
 
     emptyTransactionsContainer();
     populateTransactionsContainer();
-    recalculateExpenses();
-    displayLineChart();
+    if(expensesDiv){
+        recalculateExpenses();
+        displayLineChart();
+        displayBarChart();
+    }
+        
+    resizeTable();
 } 
 
 openTransactionModal = (tr) => {
     let id = tr.getAttribute("data-table-row");
     transactionModal.style.display = "block";
+    document.querySelector(".alert").classList.remove("alert-error");
+    
     let transactions = JSON.parse(localStorage.getItem("transactions"));
     let object;
 
@@ -175,13 +168,15 @@ openTransactionModal = (tr) => {
     deleteBtn.addEventListener("click", deleteTransaction);
 }
 
-populateTransactionsContainer = () => {
+populateTransactionsContainer = (transactions = null) => {
     if(!isStorageAvailable()){
         alert("Storage not available, can't display transactions!");
         return;
     }
 
-    let transactions = JSON.parse(localStorage.getItem("transactions"));
+    if(!transactions)
+        transactions = JSON.parse(localStorage.getItem("transactions"));
+    
     let limit = transactionsTable.getAttribute("data-limit");
     let count = 0;
 
@@ -215,7 +210,6 @@ populateTransactionsContainer = () => {
         date.appendChild(clockIcon);
 
         date.innerHTML += " " + object.transactionDate;
-        date.classList.add("hidden");
         tr.appendChild(date);
 
         let payment = document.createElement("td");
@@ -226,14 +220,6 @@ populateTransactionsContainer = () => {
         let amount = document.createElement("td");
         amount.innerHTML = object.transactionCost;
         tr.appendChild(amount);
-
-        let status = document.createElement("td");
-        tr.appendChild(status);
-
-        let statusIndicator = document.createElement("div");
-        statusIndicator.innerHTML = "Paid";
-        statusIndicator.className = "status status-red";
-        status.appendChild(statusIndicator);
 
         count++;
     });
@@ -270,6 +256,7 @@ deleteTransaction = (e) => {
         populateTransactionsContainer();
         recalculateExpenses();
         displayLineChart();
+        displayBarChart();
     }
 }
 
@@ -289,9 +276,12 @@ addTransactionToStorage = (store, category, method, cost, date) => {
 
     localStorage.setItem("transactions", JSON.stringify(currentTransactions));
     
-    let currentExpenses = JSON.parse(localStorage.getItem("expenses"));
+    let month = removeLeadingZerosFromPrice((currentTransactions[currentTransactions.length - 1].transactionDate).substr(5, 2)) - 1;
+    if(month == new Date().getMonth()){
+        let currentExpenses = JSON.parse(localStorage.getItem("expenses"));
     expenses = (+currentExpenses) + (+cost);
     localStorage.setItem("expenses", JSON.stringify(Math.round(expenses * 100) / 100));
+    }
 }
 
 //Creates alert message for (in)valid transaction
@@ -356,22 +346,6 @@ createTransactionObject = () => {
     localStorage.setItem("transactions", JSON.stringify([]))
 };
 
-initLocalStorageVariables = () => {
-    if(JSON.parse(localStorage.getItem("currency")) === null || JSON.parse(localStorage.getItem("expenses")) === null || 
-     JSON.parse(localStorage.getItem("limit")) === null){
-        
-        localStorage.setItem("currency", JSON.stringify("€"));
-        localStorage.setItem("expenses", JSON.stringify(0));
-        localStorage.setItem("limit", JSON.stringify(0));
-       }
-}
-
-initLocalVariables = () => {
-    currency = JSON.parse(localStorage.getItem("currency"));
-    limit = JSON.parse(localStorage.getItem("limit"));
-    expenses = JSON.parse(localStorage.getItem("expenses"));
-}
-
 displayLocalVariables = () => {
     expensesDiv.innerHTML = expenses + " " + currency;
     if(limit == "0")
@@ -383,7 +357,6 @@ displayLocalVariables = () => {
 //Returns object filled with months(keys) and their expenses(value)
 getExpensesPerMonth = () => {
     let transactions = JSON.parse(localStorage.getItem("transactions"));
-
     let expensesMonths = {};
 
     months.forEach(month => {
@@ -412,7 +385,7 @@ getMaxExpense = (expensesObject) => {
             maxExpense = expensesObject[element];
     });
 
-    return (Math.round(maxExpense) + 10);
+    return (Math.round(maxExpense));
 }
 
 //Sets the month text labels to correct months
@@ -444,10 +417,22 @@ lineChartSetCircles = (expensesMonths, maxExpense) => {
     for(let i = graphCircles.length - 1; i >= 0; i--){
         let monthExpense = parseInt(expensesMonths[months[currentMonthIndex--]]);
         let monthExpensePercent = monthExpense / parseInt(maxExpense);
-
         monthExpensePercent *= 100;
-        circlePositions.push((100 - (monthExpensePercent + 10)));
-        graphCircles[i].setAttribute("cy", ((100 - (monthExpensePercent + 10)) + "%"));
+        console.log(monthExpense + ", " + monthExpensePercent, ", " + (100 - monthExpensePercent));
+        
+        if(monthExpensePercent >= 100){
+            circlePositions.push(8);
+            graphCircles[i].setAttribute("cy", 8 + "%");
+        }
+        else if(monthExpensePercent <= 10){
+            circlePositions.push(Math.floor(100 - monthExpensePercent - 10));
+            graphCircles[i].setAttribute("cy", (Math.floor(100 - monthExpensePercent - 10) + "%"));
+        }
+        else{
+            circlePositions.push(Math.floor(100 - monthExpensePercent));
+            graphCircles[i].setAttribute("cy", (Math.floor(100 - monthExpensePercent) + "%"));
+        }
+        
         graphCircles[i].firstElementChild.innerHTML = monthExpense;
 
         if(currentMonthIndex < 0)
@@ -480,19 +465,199 @@ displayLineChart = () => {
     lineChartSetCircles(expensesMonths, maxExpense);
 }
 
+barChartsetRect = (paymentUsage, maxUsage) => {
+    let graphBars = document.querySelectorAll(".bar");
+
+    for(let i = graphBars.length - 1; i >= 0; i--){
+        let barPercent = parseInt(paymentUsage[categories[i]]) / parseInt(maxUsage);
+
+        barPercent *= 100;
+        graphBars[i].setAttribute("height", barPercent + "%");
+        graphBars[i].setAttribute("y", ((90 - barPercent) + "%"));
+        graphBars[i].firstElementChild.innerHTML = parseInt(paymentUsage[categories[i]]);
+    }
+}
+
+barChartSetUsed= (maxUsed) => {
+    let expensesTexts = document.querySelectorAll(".graph-used");
+    expensesTexts[0].innerHTML = maxUsed;
+    expensesTexts[1].innerHTML = Math.floor((maxUsed / 100) * 66);
+    expensesTexts[2].innerHTML = Math.floor((maxUsed / 100) * 33);
+}
+
+getMaxUsed = (object) => {
+    let maxUsed = 0;
+    Object.keys(object).forEach(element => {
+        if(object[element] > maxUsed)
+            maxUsed = object[element];
+    });
+
+    return (Math.round(maxUsed) + 10);
+}
+
+getUsagePerMonth = () => {
+    let transactions = JSON.parse(localStorage.getItem("transactions"));
+    let categorys = {};
+
+    categories.forEach(method => {
+        categorys[method] = 0;
+    })
+
+    transactions.forEach(element => {
+        categorys[(element.transactionCategory)] += 1;
+    });
+
+    return categorys;
+}
+
+displayBarChart = () => {
+    if(window.innerWidth <= 600){
+        document.querySelectorAll(".bar-graph .graph-label").forEach((text, i) => {
+            text.innerHTML = categoriesShort[i];
+        });
+    }
+    else {
+        document.querySelectorAll(".bar-graph .graph-label").forEach((text, i) => {
+            text.innerHTML = categories[i];
+        });
+    }
+
+    let paymentUsage = getUsagePerMonth();
+    let maxUsage = getMaxUsed(paymentUsage);
+    
+    barChartSetUsed(maxUsage);
+    barChartsetRect(paymentUsage, maxUsage);
+}
+
+initLocalStorageVariables = () => {
+    if(JSON.parse(localStorage.getItem("currency")) === null || JSON.parse(localStorage.getItem("expenses")) === null || 
+     JSON.parse(localStorage.getItem("limit")) === null){
+        localStorage.setItem("currency", JSON.stringify("€"));
+        localStorage.setItem("expenses", JSON.stringify(0));
+        localStorage.setItem("limit", JSON.stringify(0));
+       }
+}
+
+initLocalVariables = () => {
+    currency = JSON.parse(localStorage.getItem("currency"));
+    limit = JSON.parse(localStorage.getItem("limit"));
+    expenses = JSON.parse(localStorage.getItem("expenses"));
+}
+
+initFunctionalVariables = () => {
+    if(JSON.parse(localStorage.getItem("darkTheme")) === null || JSON.parse(localStorage.getItem("chartColors")) === null || 
+     JSON.parse(localStorage.getItem("currency")) === null){
+        localStorage.setItem("darkTheme", JSON.stringify(darkThemeToggle.checked));
+        localStorage.setItem("chartColors", JSON.stringify(chartColorToggle.checked));
+        localStorage.setItem("currency", JSON.stringify(toggleCurrency.checked ? "€" : "$"));
+     }
+}
+
+setToggleButtonEvents = () => {
+    darkThemeToggle.addEventListener("change", function(){
+        localStorage.setItem("darkTheme", JSON.stringify(this.checked));
+        setTheme();
+    });
+
+    toggleCurrency.addEventListener("change", function(){
+        localStorage.setItem("currency", JSON.stringify(this.checked ? "€" : "$"));
+        initLocalVariables();
+        displayLocalVariables();
+    });
+
+    chartColorToggle.addEventListener("change", function(){
+        localStorage.setItem("chartColors", JSON.stringify(this.checked));
+        setChartColors();
+    });
+
+    monthlyLimitInput.addEventListener("change", function(){
+        localStorage.setItem("limit", JSON.stringify(this.value));
+        initLocalVariables();
+        displayLocalVariables();
+    });
+}
+
+initToggleValues = () => {
+    darkThemeToggle.checked = JSON.parse(localStorage.getItem("darkTheme"));
+    chartColorToggle.checked = JSON.parse(localStorage.getItem("chartColors"));
+    toggleCurrency.checked = JSON.parse(localStorage.getItem("currency")) == "€";
+}
+
+setChartColors = () => {
+    let circles = document.querySelectorAll(".graph-circle");
+    let connections = document.querySelectorAll(".connection");
+    let bars = document.querySelectorAll(".bar");
+
+    if(chartColorToggle.checked){
+        circles.forEach(circle => circle.classList.add("lineColor"));
+        connections.forEach(connection => connection.classList.add("lineColor"));
+        bars.forEach(bar => bar.classList.add("barColor"));
+    }
+    else {
+        circles.forEach(circle => circle.classList.remove("lineColor"));
+        connections.forEach(connection => connection.classList.remove("lineColor"));
+        bars.forEach(bar => bar.classList.remove("barColor"));
+    }
+}
+
+setTheme = () => {
+    let menuItems = document.querySelectorAll(".sidebar-item-link");
+    let activeItem = document.querySelector(".sidebar-item-link.active");
+    let navbar = document.getElementById("navbar");
+    let title = document.querySelector(".title");
+
+    if(!JSON.parse(localStorage.getItem("darkTheme"))){
+        menu.classList.add("lightMenu");
+        menuItems.forEach(item => item.classList.add("lightColor"));
+        activeItem.classList.add("lightActive");
+        navbar.classList.add("lightMenu");
+        title.classList.add("lightColor");
+    }
+    else {
+        menu.classList.remove("lightMenu");
+        menuItems.forEach(item => item.classList.remove("lightColor"));
+        activeItem.classList.remove("lightActive");
+        navbar.classList.remove("lightMenu");
+        title.classList.remove("lightColor");
+    }
+}
+
+resizeTable = () => {
+    if(window.innerWidth <= 600){
+        document.querySelectorAll(".hidden").forEach(element => {           
+            element.classList.add("sm-hide");
+        });
+    }
+    else{
+        document.querySelectorAll(".hidden").forEach(element => {
+            element.classList.remove("sm-hide");
+        });
+    }
+}
+
 //Initializes all event listeners and other stuff
 init = () => {
     if(isTransactionObjectNull())
         createTransactionObject();
 
     initLocalStorageVariables();
+
+    if(darkThemeToggle && toggleCurrency && chartColorToggle && monthlyLimitInput){
+        initFunctionalVariables();
+        setToggleButtonEvents();
+        initToggleValues();
+    }
+
     initLocalVariables();
 
     if(limitDiv && expensesDiv)
         displayLocalVariables();
 
-    if(lineGraph)
+    if(lineGraph && barGraph){
         displayLineChart();
+        displayBarChart();
+    }
+
 
     if(dateInput)
         dateInput.value = new Date().toDateInputValue();
@@ -500,23 +665,48 @@ init = () => {
     if(transactionAddBtn)
         transactionAddBtn.addEventListener("click", checkTransaction);
 
-    if(!isTransactionObjectNull() && transactionsTable)
+    if(transactionsTable){
+    
+        if(transactionsTable.getAttribute("data-limit")){
+            if(window.innerWidth <= 600){
+                transactionsTable.setAttribute("data-limit", "4");
+            }
+            else if(window.innerWidth > 600 && window.innerWidth < 1500){
+                transactionsTable.setAttribute("data-limit", "5");
+            }
+            else
+                transactionsTable.setAttribute("data-limit", "8");
+        }
+        
+    
         populateTransactionsContainer();
-
-    if(sortBySelect && filterSelect){
-        sortBySelect.addEventListener("change", sortTransactions);
-        filterSelect.addEventListener("change", filterTransactions);
+        resizeTable();
     }
+            
+        
+
 
     hamburgerBtn.addEventListener("click", toggleSidebar);
 
-    if(closeModalBtn)
+    if(closeModalBtn){
         closeModalBtn.addEventListener("click", function(){
             transactionModal.style.display = "none";
         });
+    }
+
+    if(sortOptions){
+        sortOptions.forEach(option => option.addEventListener("click", function(){
+            sortTransactions(this);
+        }));
+    }
+
+    setTheme();
+    if(chartColorToggle)
+        setChartColors();
 }
 
 
+const barGraph = document.querySelector(".bar-graph");
 const lineGraph = document.querySelector(".line-graph");
 const Wrapper = document.getElementById("Wrapper");
 const hamburgerBtn = document.getElementById("hamburger-btn");
@@ -525,16 +715,21 @@ const menu = document.querySelector(".sidebar");
 const dateInput = document.getElementById('date-input');
 const transactionAddBtn = document.getElementById("add-btn");
 const storageAvailable = typeof(Storage) !== "undefined";
-const sortBySelect = document.getElementById("sort-select");
-const filterSelect = document.getElementById("filter-select");
 const transactionsTable = document.getElementById("transactions-table-container");
 const expensesDiv = document.querySelector(".expenses");
 const limitDiv = document.querySelector(".limit");
 const transactionModal = document.getElementById("transactionModal");
 const body = document.getElementsByTagName("body")[0];
 const closeModalBtn = document.querySelector(".modal-close-btn");
+const darkThemeToggle = document.getElementById("darkThemeToggle");
+const chartColorToggle = document.getElementById("chartColorToggle");
+const toggleCurrency = document.getElementById("toggleCurrency");
+const monthlyLimitInput = document.getElementById("monthlyLimitInput");
+const sortOptions = document.querySelectorAll(".option");
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const categories = ["Entertainment", "Food/Drink", "Transportation", "Subscription", "Other"];
+const categoriesShort = ["Ent.", "F/D", "Tsp.", "Subs.", "Othr"];
 
 let sidebarShown = false;
 let currency;
@@ -548,24 +743,38 @@ window.onload = () => {
     localStorage.setItem("currency", null);
     localStorage.setItem("expenses", null);
     localStorage.setItem("limit", null);
+    localStorage.setItem("darkTheme", null);
+    localStorage.setItem("chartColors", null);
 */
-    //console.log(JSON.parse(localStorage.getItem("expenses")));
     init();
-
-    
-
 }
 
 window.onresize = () => {
     if(window.innerWidth <= 600){
-        document.querySelectorAll(".hidden").forEach(element => {
+        document.querySelectorAll(".bar-graph .graph-label").forEach((text, i) => {
+            text.innerHTML = categoriesShort[i];
+        });
+    }
+    else {
+        document.querySelectorAll(".bar-graph .graph-label").forEach((text, i) => {
+            text.innerHTML = categories[i];
+        });
+    }
+
+    if(transactionsTable.getAttribute("data-limit")){
+        if(window.innerWidth <= 600){
+            transactionsTable.setAttribute("data-limit", "4");
             
-            element.classList.add("sm-hide");
-        });
+        }
+        else if(window.innerWidth > 600 && window.innerWidth < 1500){
+            transactionsTable.setAttribute("data-limit", "5");
+        }
+        else
+            transactionsTable.setAttribute("data-limit", "8");
+
+        emptyTransactionsContainer();
+        populateTransactionsContainer();
     }
-    else{
-        document.querySelectorAll(".hidden").forEach(element => {
-            element.classList.remove("sm-hide");
-        });
-    }
+
+    resizeTable();
 }

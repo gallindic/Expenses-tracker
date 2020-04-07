@@ -47,15 +47,7 @@
                 </a>
             </li>
             <li class="sidebar-menu-item">
-                <a href="" class="sidebar-item-link">
-                    <span class="sidebar-icon">
-                        <i class="fas fa-cogs"></i>
-                    </span>
-                    Settings
-                </a>
-            </li>
-            <li class="sidebar-menu-item">
-                <a href="src/pages/settings.html" class="sidebar-item-link">
+                <a href="src/pages/description.html" class="sidebar-item-link">
                     <span class="sidebar-icon">
                         <i class="fas fa-stream"></i>
                     </span>
@@ -81,28 +73,27 @@
             <div class="transaction-modal">
                 <span class="modal-close-btn">&times;</span>
                 <div class="modal-body">
-                    <label for="store">Name of the store, restaurant, etc.</label>
+                    <div class="alert"></div>
+                    <label for="store-input">Name of the store, restaurant, etc.</label>
                     <input type="text" name="store" id="store-input">
-                    <label for="category">Transaction category</label>
+                    <label for="category-input">Transaction category</label>
                     <select name="category" id="category-input">
                         <option value="Entertainment">Entertainment</option>
-                        <option value="Food">Food</option>
-                        <option value="Drink">Drink</option>
-                        <option value="Utils">Utils</option>
+                        <option value="Food/Drink">Food/Drink</option>
                         <option value="Transportation">Transportation</option>
                         <option value="Subscription">Subscription</option>
                         <option value="Other">Other</option>
                     </select>
-                    <label for="method-dropdown">Payment method</label>
+                    <label for="type-drpdwn">Payment method</label>
                     <select name="method-dropdown" id="type-drpdwn">
                         <option value="Card">Card</option>
                         <option value="Cash">Cash</option>
                         <option value="Cryptocoin">Cryptocoin</option>
                         <option value="Other">Other</option>
                     </select>
-                    <label for="cost">Cost</label>
+                    <label for="cost-input">Cost</label>
                     <input type="number" name="cost" id="cost-input" min="1">
-                    <label for="date">Date</label>
+                    <label for="date-input">Date</label>
                     <input type="date" name="date" id="date-input">
                     <div class="controls">
                         <div class="edit-btn btn" id="edit-btn">Edit</div>
@@ -114,7 +105,7 @@
         </div>
         <div class="transactions-container container">
             <div class="transactions">
-                <table id="transactions-table-container" class="transactions-table" data-limit="4">
+                <table id="transactions-table-container" class="transactions-table" data-limit="1">
                     <thead>
                         <tr class="head">
                             <th class="hidden">
@@ -123,7 +114,7 @@
                             <th>
                                 Category
                             </th>
-                            <th class="hidden">
+                            <th>
                                 Date
                             </th>
                             <th class="hidden">
@@ -132,9 +123,6 @@
                             
                             <th>
                                 Amount
-                            </th>
-                            <th>
-                                Status
                             </th>
                         </tr>
                     </thead>
@@ -157,16 +145,16 @@
                   <line class="dashed" x1="5%" x2="100%" y1="8%" y2="8%"></line>
                 </g>
                 <g>
-                    <text class="graph-text graph-month" x="5%" y="98%">Januar</text>
-                    <text class="graph-text graph-month" x="26%" y="98%">Februar</text>
-                    <text class="graph-text graph-month" x="47%" y="98%">Marec</text>
-                    <text class="graph-text graph-month" x="68%" y="98%">April</text>
-                    <text class="graph-text graph-month" x="89%" y="98%">Maj</text>
+                    <text class="graph-text graph-month" x="5%" y="98%"></text>
+                    <text class="graph-text graph-month" x="26%" y="98%"></text>
+                    <text class="graph-text graph-month" x="47%" y="98%"></text>
+                    <text class="graph-text graph-month" x="68%" y="98%"></text>
+                    <text class="graph-text graph-month" x="89%" y="98%"></text>
                 </g>              
                 <g>
-                    <text class="graph-text graph-expense" x="0%" y="10%">100</text>
-                    <text class="graph-text graph-expense" x="0%" y="35%">66</text>
-                    <text class="graph-text graph-expense" x="0%" y="65%">33</text>
+                    <text class="graph-text graph-expense" x="0%" y="10%"></text>
+                    <text class="graph-text graph-expense" x="0%" y="35%"></text>
+                    <text class="graph-text graph-expense" x="0%" y="65%"></text>
                 </g>
                 <g class="grid y-grid">
                     <line x1="27%" x2="27%" y1="90%" y2="8%"></line>
@@ -182,29 +170,27 @@
                 </g>
                 <g class="data" data-setname="Our first data set">
                     <circle class="graph-circle" cx="5%" cy="50%" r="6">
-                        <title>50</title>
+                        <title></title>
                     </circle>
                     <circle class="graph-circle" cx="27%" cy="10%" r="6">
-                        <title>99</title>
+                        <title></title>
                     </circle>
                     <circle class="graph-circle" cx="48%" cy="67%" r="6">
-                        <title>34</title>
+                        <title></title>
                     </circle>
                     <circle class="graph-circle" cx="69%" cy="19%" r="6">
-                        <title>80</title>
+                        <title></title>
                     </circle>
                     <circle class="graph-circle" cx="90%" cy="44%" r="6">
-                        <title>13</title>
+                        <title></title>
                     </circle>
                 </g>
                 
               </svg>
         </div>
-        <div class="pie-graph-container container">
-        </div>
         <div class="pie-graph-container2 container">
             <div class="chart-header">
-                <h2>Number of diffrent payments used</h2>
+                <h2>Number of diffrent transaction categories</h2>
             </div>
             <svg class="bar-graph graph">
                 <g class="grid x-grid">
@@ -214,20 +200,79 @@
                   <line class="dashed" x1="5%" x2="100%" y1="8%" y2="8%"></line>
                 </g>
                 <g>
-                    <text class="graph-text" x="5%" y="98%">Entertainment</text>
-                    <text class="graph-text" x="26%" y="98%">Food/Drink</text>
-                    <text class="graph-text" x="47%" y="98%">Transportation</text>
-                    <text class="graph-text" x="68%" y="98%">Subscription</text>
-                    <text class="graph-text" x="89%" y="98%">Other</text>
+                    <text class="graph-text graph-label" x="5%" y="98%">Entertainment</text>
+                    <text class="graph-text graph-label" x="26%" y="98%">Food/Drink</text>
+                    <text class="graph-text graph-label" x="47%" y="98%">Transportation</text>
+                    <text class="graph-text graph-label" x="68%" y="98%">Subscription</text>
+                    <text class="graph-text graph-label" x="89%" y="98%">Other</text>
                 </g>              
                 <g>
-                    <text class="graph-text" x="0%" y="10%">100</text>
-                    <text class="graph-text" x="0%" y="35%">66</text>
-                    <text class="graph-text" x="0%" y="65%">33</text>
+                    <text class="graph-text graph-used" x="0%" y="10%"></text>
+                    <text class="graph-text graph-used" x="0%" y="35%"></text>
+                    <text class="graph-text graph-used" x="0%" y="65%"></text>
+                </g>
+                <g>
+                    <rect class="bar" width="" height="" x="5%" y="40%">
+                        <title></title>
+                    </rect>
+                    <rect class="bar" width="" height="" x="26%" y="20%">
+                        <title></title>
+                    </rect>
+                    <rect class="bar" width="" height="" x="47%" y="57%">
+                        <title></title>
+                    </rect>
+                    <rect class="bar" width="" height="" x="68%" y="24%">
+                        <title></title>
+                    </rect>
+                    <rect class="bar" width="" height="" x="89%" y="85%">
+                        <title></title>
+                    </rect>
                 </g>
               </svg>
         </div>
-        <div class="quick-settings-container container">quick settings</div>
+        <div class="quick-settings-container container">
+            <div class="settings">
+                <div class="settings-seperator">
+                    Visuals
+                </div>
+                <div class="setting">
+                    <p class="setting-description">Toggle dark theme</p>
+                    <div class="toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="darkThemeToggle" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting">
+                    <p class="setting-description">Toggle charts display color</p>
+                    <div class="toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="chartColorToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="settings-seperator">
+                    Functionality
+                </div>
+                <div class="setting">
+                    <p class="setting-description">Use euro(default) currency</p>
+                    <div class="toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="toggleCurrency" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting">
+                    <p class="setting-description limit-setting">Set monthly limit    </p>
+                    <div class="input">
+                        <input type="text" name="monthly-limit" id="monthlyLimitInput" placeholder="amount">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="src/js/script.js"></script>
 </body>
